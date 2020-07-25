@@ -431,11 +431,11 @@ void HAL_GPIO_WritePin(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Pin
 
   if (PinState != GPIO_PIN_RESET)
   {
-    GPIOx->BSRR = GPIO_Pin;
+    GPIOx->BSRRH = GPIO_Pin;
   }
   else
   {
-    GPIOx->BSRR = (uint32_t)GPIO_Pin << GPIO_NUMBER;
+    GPIOx->BSRRL = (uint32_t)GPIO_Pin << GPIO_NUMBER;
   }
 }
 
@@ -452,11 +452,11 @@ void HAL_GPIO_TogglePin(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 
   if ((GPIOx->ODR & GPIO_Pin) == GPIO_Pin)
   {
-    GPIOx->BSRR = (uint32_t)GPIO_Pin << GPIO_NUMBER;
+    GPIOx->BSRRL = (uint32_t)GPIO_Pin << GPIO_NUMBER;
   }
   else
   {
-    GPIOx->BSRR = GPIO_Pin;
+    GPIOx->BSRRH = GPIO_Pin;
   }
 }
 
