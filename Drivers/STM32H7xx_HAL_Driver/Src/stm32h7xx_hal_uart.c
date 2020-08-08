@@ -1499,6 +1499,11 @@ HAL_StatusTypeDef HAL_UART_Receive_DMA(UART_HandleTypeDef *huart, uint8_t *pData
   }
 }
 
+HAL_StatusTypeDef HAL_UART_GetDMACount(UART_HandleTypeDef *huart, uint16_t *size) {
+    *size = __HAL_DMA_GET_COUNTER(huart->hdmarx);
+    return HAL_OK;
+}
+
 /**
   * @brief Pause the DMA Transfer.
   * @param huart UART handle.

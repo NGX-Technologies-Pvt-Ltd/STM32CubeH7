@@ -984,6 +984,52 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
   return errorcode;
 }
 
+HAL_StatusTypeDef HAL_SPI_TransmitByte(SPI_HandleTypeDef *hspi, uint8_t *pData)
+{
+  HAL_StatusTypeDef errorcode = HAL_OK;
+
+  /* Check Direction parameter */
+  assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE_2LINES_TXONLY(hspi->Init.Direction));
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
+
+  /* Configure communication direction : 1Line */
+  if (hspi->Init.Direction == SPI_DIRECTION_1LINE)
+  {
+    SPI_1LINE_TX(hspi);
+  }
+
+  MODIFY_REG(hspi->Instance->CR2, SPI_CR2_TSIZE, 1);
+
+  /* Enable SPI peripheral */
+  __HAL_SPI_ENABLE(hspi);
+
+  SET_BIT(hspi->Instance->CR1, SPI_CR1_CSTART);
+
+  while(!(__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_TXP)));
+
+  *((__IO uint32_t *)&hspi->Instance->TXDR) = *((uint8_t *)pData);
+
+  while ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_EOT) ? SET : RESET) == RESET) {
+
+  }
+
+  /* Call standard close procedure with error check */
+  SPI_CloseTransfer(hspi);
+
+  /* Process Unlocked */
+  __HAL_UNLOCK(hspi);
+
+  hspi->State = HAL_SPI_STATE_READY;
+
+  if (hspi->ErrorCode != HAL_SPI_ERROR_NONE)
+  {
+    return HAL_ERROR;
+  }
+  return errorcode;
+}
+
 /**
   * @brief  Receive an amount of data in blocking mode.
   * @param  hspi   : pointer to a SPI_HandleTypeDef structure that contains
