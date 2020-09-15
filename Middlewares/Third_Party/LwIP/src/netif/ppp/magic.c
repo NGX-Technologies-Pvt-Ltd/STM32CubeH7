@@ -220,7 +220,7 @@ static u32_t magic_randomseed;      /* Seed used for random number generation. *
  * event.
  */
 void magic_init(void) {
-  magic_randomseed += sys_jiffies();
+  magic_randomseed += 10;
 #ifndef LWIP_RAND
   /* Initialize the Borland random number generator. */
   srand((unsigned)magic_randomseed);
@@ -244,7 +244,7 @@ void magic_randomize(void) {
     /* The initialization function also updates the seed. */
   } else {
 #endif /* LWIP_RAND */
-    magic_randomseed += sys_jiffies();
+    magic_randomseed += 10;
 #ifndef LWIP_RAND
   }
 #endif /* LWIP_RAND */
